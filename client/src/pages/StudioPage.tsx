@@ -13,7 +13,7 @@ export default function StudioPage(){
   function example(){studio.changeLanguage('a');studio.setText('[voice=af_heart]\nEvery story begins with a voice.\n\n[pause=1.0]\n[voice=am_adam]\nAnd sometimes, a second perspective.');}
   return <div className="app-shell">
     <a href="#script" className="skip-link">Skip to script</a>
-    <AppToolbar connected={studio.connected} busy={studio.busy} text={studio.text} onNew={studio.newScript} onImport={studio.setText} onStatus={studio.setStatus} onAbout={()=>setAbout(true)}/>
+    <AppToolbar onQuit={studio.canQuit?()=>{void studio.quit();}:undefined} connected={studio.connected} busy={studio.busy} text={studio.text} onNew={studio.newScript} onImport={studio.setText} onStatus={studio.setStatus} onAbout={()=>setAbout(true)}/>
     <main id="main" className="workspace">
       <section className="workspace-heading" aria-labelledby="studio-title">
         <div className="spotlight-copy"><p className="eyebrow"><span className="studio-pill"><span className="status-dot"/>KOKOSPEAK STUDIO</span></p><h1 id="studio-title">A space for<br/><span>every voice.</span></h1><p className="workspace-description">Write something. Find its voice.<br/>Make it sound the way you imagined.</p></div>

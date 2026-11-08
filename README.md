@@ -8,10 +8,7 @@ A local text-to-speech application powered by the open-source Kokoro model, with
 
 <img width="2869" height="3851" alt="thumbnail" src="https://github.com/user-attachments/assets/b38a9d08-274f-4280-88b8-a6c0e041a914" />
 
-
 https://github.com/user-attachments/assets/d404b889-975e-4d2a-a451-1e12f1f087ba
-
-
 
 ## Features
 
@@ -33,17 +30,17 @@ https://github.com/user-attachments/assets/d404b889-975e-4d2a-a451-1e12f1f087ba
 
 ## Available Languages and Voices
 
-| Language | Female voices | Male voices |
-| --- | --- | --- |
-| American English | Heart, Alloy, Aoede, Bella, Jessica, Kore, Nicole, Nova, River, Sarah, Sky | Adam, Echo, Eric, Fenrir, Liam, Michael, Onyx, Puck, Santa |
-| British English | Alice, Emma, Isabella, Lily | Daniel, Fable, George, Lewis |
-| Japanese | Alpha, Gongitsune, Nezumi, Tebukuro | Kumo |
-| Mandarin Chinese | Xiaobei, Xiaoni, Xiaoxiao, Xiaoyi | Yunjian, Yunxi, Yunxia, Yunyang |
-| French | Siwis | — |
-| Hindi | Alpha, Beta | Omega, Psi |
-| Italian | Sara | Nicola |
-| Spanish | Dora | Alex, Santa |
-| Brazilian Portuguese | Dora | Alex, Santa |
+| Language             | Female voices                                                              | Male voices                                                |
+| -------------------- | -------------------------------------------------------------------------- | ---------------------------------------------------------- |
+| American English     | Heart, Alloy, Aoede, Bella, Jessica, Kore, Nicole, Nova, River, Sarah, Sky | Adam, Echo, Eric, Fenrir, Liam, Michael, Onyx, Puck, Santa |
+| British English      | Alice, Emma, Isabella, Lily                                                | Daniel, Fable, George, Lewis                               |
+| Japanese             | Alpha, Gongitsune, Nezumi, Tebukuro                                        | Kumo                                                       |
+| Mandarin Chinese     | Xiaobei, Xiaoni, Xiaoxiao, Xiaoyi                                          | Yunjian, Yunxi, Yunxia, Yunyang                            |
+| French               | Siwis                                                                      | —                                                          |
+| Hindi                | Alpha, Beta                                                                | Omega, Psi                                                 |
+| Italian              | Sara                                                                       | Nicola                                                     |
+| Spanish              | Dora                                                                       | Alex, Santa                                                |
+| Brazilian Portuguese | Dora                                                                       | Alex, Santa                                                |
 
 Japanese and Mandarin require the optional language dependencies described below.
 

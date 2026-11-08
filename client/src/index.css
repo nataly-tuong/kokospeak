@@ -249,3 +249,10 @@
   *,*::before,*::after { transition: none !important; scroll-behavior: auto !important; }
   .progress-spinner,.generation-progress progress:indeterminate { animation: none; }
 }
+
+@media (max-width: 400px) {
+  .app-toolbar .brand { font-size: 12px; gap: 6px; }
+  .app-toolbar .toolbar-button { padding: 5px; }
+  .app-toolbar .icon-button { width: 26px; height: 26px; }
+  .app-toolbar > .ml-auto { gap: 2px; }
+}

@@ -1,7 +1,7 @@
 import { useEffect,useRef,useState } from 'react';
 import { voices } from '../data/voices';
 import { defaultSettings } from '../data/presets';
-import { cancelJob,exportSpeech,getHealth,getJob,saveBlob,startJob,validateSettings } from '../lib/engine';
+import { cancelJob,exportSpeech,getHealth,getJob,saveBlob,startJob,stopServer,validateSettings } from '../lib/engine';
 import type { AudioFormat,BatchScript,GeneratedAudio,Job,LanguageCode,Take,VoiceSettings } from '../types/studio';
 
 export function useStudio() {
@@ -13,6 +13,8 @@ export function useStudio() {
   const [connected,setConnected]=useState(false);
   const [ffmpeg,setFfmpeg]=useState(false);
   const [version,setVersion]=useState('');
+  const [canQuit,setCanQuit]=useState(false);
+  const sessionToken=useRef('');
   const [busy,setBusy]=useState(false);
   const [exporting,setExporting]=useState(false);
   const [audio,setAudio]=useState<GeneratedAudio|null>(null);
@@ -30,14 +32,25 @@ export function useStudio() {
 
   useEffect(()=>{
     mounted.current=true;
+    const fragment=new URLSearchParams(window.location.hash.slice(1));
+    const incoming=fragment.get('session');
+    try{
+      sessionToken.current=incoming??sessionStorage.getItem('kokospeak.launch-session')??'';
+      if(incoming){
+        sessionStorage.setItem('kokospeak.launch-session',incoming);
+        fragment.delete('session');
+        const remaining=fragment.toString();
+        window.history.replaceState(null,'',window.location.pathname+window.location.search+(remaining?'#'+remaining:''));
+      }
+    }catch{if(incoming)sessionToken.current=incoming;}
     let checking=false;
     const controller=new AbortController();
     async function check() {
       if(checking)return;checking=true;
       try {
         const health=await getHealth(AbortSignal.any([controller.signal,AbortSignal.timeout(4000)]));
-        if(!controller.signal.aborted){setConnected(true);setVersion(health.kokoroVersion);setFfmpeg(health.ffmpegAvailable);}
-      }catch{if(!controller.signal.aborted)setConnected(false);}
+        if(!controller.signal.aborted){setConnected(true);setVersion(health.kokoroVersion);setFfmpeg(health.ffmpegAvailable);setCanQuit(Boolean(health.managed&&sessionToken.current));}
+      }catch{if(!controller.signal.aborted){setConnected(false);setCanQuit(false);}}
       finally{checking=false;}
     }
     void check();const interval=window.setInterval(()=>{void check();},5000);
@@ -127,7 +140,15 @@ export function useStudio() {
       setBatch(items);setStatus(`${items.length} file(s) ready for the batch queue.`);
     }catch(error){setStatus(error instanceof Error?error.message:'Could not load files.');}
   }
+  async function quit(){
+    if(!sessionToken.current||busy)return;
+    try{
+      await stopServer(sessionToken.current);
+      setConnected(false);setCanQuit(false);
+      setStatus('KokoSpeak stopped. You can close this tab.');
+    }catch(error){setStatus(error instanceof Error?error.message:'Could not stop KokoSpeak.');}
+  }
   return {text,setText:changeText,settings,setSettings:changeSettings,filename,setFilename,format,setFormat,
     status,setStatus,words,changeLanguage,clearText,newScript,connected,ffmpeg,version,busy,audio,
-    generate,exporting,exportAudio,job,cancel,stopping,takes,selectTake,restoreTake,saveRecipe,importRecipe,batch,loadBatch,batchPosition};
+    generate,exporting,exportAudio,job,cancel,stopping,takes,selectTake,restoreTake,saveRecipe,importRecipe,batch,loadBatch,batchPosition,canQuit,quit};
 }

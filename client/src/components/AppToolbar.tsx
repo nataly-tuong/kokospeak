@@ -1,5 +1,5 @@
 import { useRef } from 'react';
-import { AudioLines, FilePlus2, FolderOpen, Download, Maximize2, CircleHelp } from 'lucide-react';
+import { AudioLines, FilePlus2, FolderOpen, Download, Maximize2, CircleHelp, Power } from 'lucide-react';
 import { downloadText } from '../lib/files';
 
 interface Props {
@@ -10,9 +10,10 @@ interface Props {
   onImport: (text: string) => void;
   onAbout: () => void;
   onStatus: (status: string) => void;
+  onQuit?: () => void;
 }
 
-export default function AppToolbar({ text, connected, busy, onNew, onImport, onAbout, onStatus }: Props) {
+export default function AppToolbar({ text, connected, busy, onNew, onImport, onAbout, onStatus, onQuit }: Props) {
   const input = useRef<HTMLInputElement>(null);
   async function fullscreen() {
     try {
@@ -40,6 +41,7 @@ export default function AppToolbar({ text, connected, busy, onNew, onImport, onA
       <div className="ml-auto flex items-center gap-2">
         <span className="engine-label"><span className="status-dot" />{connected ? 'Local engine connected' : 'Start the Python server'}</span>
         <button className="icon-button" onClick={fullscreen} title="Toggle fullscreen" aria-label="Toggle fullscreen"><Maximize2 size={16} /></button>
+        {onQuit&&<button className="icon-button" onClick={onQuit} disabled={busy} title="Quit KokoSpeak" aria-label="Quit KokoSpeak"><Power size={16}/></button>}
         <button className="icon-button" onClick={onAbout} title="About KokoSpeak" aria-label="About KokoSpeak"><CircleHelp size={17} /></button>
       </div>
     </header>

@@ -1,5 +1,6 @@
 """HTTP integration checks; mocked inference, real WAV and export files."""
 import io
+import os
 from pathlib import Path
 from tempfile import TemporaryDirectory
 import time
@@ -57,6 +58,13 @@ class BackendTests(unittest.TestCase):
         self.assertEqual(self.client.get(f'/api/jobs/{uuid4()}').status_code,404)
         self.assertEqual(self.client.get('/api/audio/not-a-uuid').status_code,422)
         self.assertEqual(self.client.get(f'/api/audio/{uuid4()}').status_code,404)
+
+    def test_shutdown_requires_launcher_capability(self):
+        with patch.dict(os.environ,{'KOKOSPEAK_MANAGED_TOKEN':'test-capability'}),patch.object(main.app.state,'shutdown_callback',create=True) as callback:
+            self.assertEqual(self.client.post('/api/shutdown',json={'token':'wrong'}).status_code,403)
+            callback.assert_not_called()
+            self.assertEqual(self.client.post('/api/shutdown',json={'token':'test-capability'}).status_code,200)
+            callback.assert_called_once()
 
     def test_health_catalog_and_recipe_validation(self):
         self.assertEqual(self.client.get('/api/health').status_code,200)

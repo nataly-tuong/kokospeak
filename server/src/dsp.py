@@ -1,10 +1,10 @@
 """Measurable audio transforms; no model or web-framework dependencies."""
 from pathlib import Path
-import shutil
 import subprocess
 import tempfile
 import wave
 import numpy as np
+from .runtime import ffmpeg_executable
 
 class Cancelled(Exception):
     pass
@@ -34,9 +34,9 @@ def read_wav(path: Path):
 
 
 def require_ffmpeg():
-    executable = shutil.which('ffmpeg')
+    executable = ffmpeg_executable()
     if not executable:
-        raise RuntimeError('Install ffmpeg for pitch, EQ, room/radio effects, and MP3 export; then restart Python.')
+        raise RuntimeError('FFmpeg is unavailable. Rerun the KokoSpeak installer with --repair, or install ffmpeg and restart.')
     return executable
 
 

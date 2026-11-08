@@ -5,6 +5,8 @@ from pathlib import Path
 from typing import Literal
 from uuid import UUID, uuid4
 import json
+import os
+import secrets
 import logging
 import re
 import shutil
@@ -17,12 +19,14 @@ from starlette.middleware.trustedhost import TrustedHostMiddleware
 from . import engine, dsp
 from .catalog import ALL_VOICES, LANGUAGE_OPTIONS, FORMAT_OPTIONS, SAMPLE_RATE
 from .models import GenerateRequest, ExportRequest, VoiceSettings
+from .runtime import client_dist, generated_dir, ffmpeg_executable
+from pydantic import BaseModel
 from .jobs import JobQueue, QueueFull
 
 SERVER_DIR = Path(__file__).resolve().parents[1]
-GENERATED_DIR = SERVER_DIR/'generated'
+GENERATED_DIR = generated_dir()
 GENERATED_DIR.mkdir(parents=True, exist_ok=True)
-CLIENT_DIST = SERVER_DIR.parent/'client'/'dist'
+CLIENT_DIST = client_dist()
 try: KOKORO_VERSION = version('kokoro')
 except PackageNotFoundError: KOKORO_VERSION = 'not installed'
 MEDIA_TYPES = {'wav':'audio/wav','flac':'audio/flac','ogg':'audio/ogg','mp3':'audio/mpeg'}
@@ -73,8 +77,22 @@ def download_name(filename, fmt):
 
 @app.get('/api/health')
 def health():
-    return dict(status='ok',kokoroVersion=KOKORO_VERSION,modelLoaded=engine._shared_model is not None,
-                ffmpegAvailable=bool(shutil.which('ffmpeg')))
+    return dict(status='ok',appId='kokospeak',kokoroVersion=KOKORO_VERSION,modelLoaded=engine._shared_model is not None,
+                ffmpegAvailable=bool(ffmpeg_executable()),managed=bool(getattr(app.state,'shutdown_callback',None)))
+
+
+class ShutdownRequest(BaseModel):
+    token: str
+
+
+@app.post('/api/shutdown')
+def shutdown(request: ShutdownRequest):
+    expected = os.environ.get('KOKOSPEAK_MANAGED_TOKEN','')
+    callback = getattr(app.state,'shutdown_callback',None)
+    if not expected or not secrets.compare_digest(request.token.encode(),expected.encode()) or callback is None:
+        raise HTTPException(403,'This session cannot stop the local server.')
+    callback()
+    return {'status':'stopping'}
 
 
 @app.get('/api/options')
