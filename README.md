@@ -274,7 +274,6 @@ kokospeak/
 ├── Start KokoSpeak.cmd
 ├── launch.py
 ├── INSTALL.md
-├── DESIGN.md
 └── README.md
 ```
 
