@@ -1,32 +1,88 @@
 # KokoSpeak
 
-A local text-to-speech application powered by the open-source Kokoro model, with a React interface and a Python backend. Write scripts, blend voices, shape their delivery, and export audio and subtitles from one workspace.
+A local text-to-speech application powered by the open-source Kokoro model. Write scripts, blend voices, shape their delivery, and export audio and subtitles through a React interface backed by Python.
 
-> **Run it on your own machine, privately and for free.** Speech generation runs locally. Internet access is needed for installation and the initial downloads of model weights, voices, and language resources. Once the required files are cached, generation can run offline.
+> **Private, local, and free to run.** Speech generation happens on your computer. Installation and the first downloads of model weights, voices, and language resources require internet access. Once the required files are cached, generation can run offline.
 
 ## Preview
 
-<img width="2869" height="3851" alt="thumbnail" src="https://github.com/user-attachments/assets/b38a9d08-274f-4280-88b8-a6c0e041a914" />
+![KokoSpeak Thumbnail](https://github.com/user-attachments/assets/b38a9d08-274f-4280-88b8-a6c0e041a914)
 
 https://github.com/user-attachments/assets/d404b889-975e-4d2a-a451-1e12f1f087ba
 
+## Installation
+
+Download and extract the complete project into a writable folder. The automatic installer selects Python 3.12, prepares an isolated environment, installs dependencies and FFmpeg, builds the interface, and opens KokoSpeak in your browser.
+
+Your existing Python or Conda environment can stay active. The installer manages its own environment and frontend build tools.
+
+### macOS and Linux
+
+Open a terminal in the extracted project folder and run:
+
+```bash
+bash install.sh
+```
+
+On macOS, you can also double-click **Start KokoSpeak.command**. If Finder does not open it, use the terminal command above.
+
+### Windows
+
+Double-click **Start KokoSpeak.cmd**, or run this from the project folder in PowerShell:
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File .\install.ps1
+```
+
+The execution-policy option applies only to that process; it does not change your saved system policy.
+
+### First Run and Later Launches
+
+The first setup downloads dependencies and may take several minutes. It obtains Python 3.12 through uv and downloads Node.js 24 LTS locally when the frontend needs building. FFmpeg is supplied through its Python package on supported platforms. Source/configuration fingerprints let later launches reuse completed setup.
+
+Use the same installer command or Start file for later launches. On macOS/Linux, you can also run:
+
+```bash
+bash start.sh
+```
+
+The launcher starts one local server and opens the built interface in your default browser. It normally uses port 8000 and selects another free loopback port if necessary. Keep the terminal open for source launches. Use **Quit KokoSpeak** in the toolbar, or press `Ctrl+C` in the terminal, to stop a launcher-managed session. Closing the browser tab alone does not stop the server.
+
+### Setup Options
+
+| Purpose                                          | macOS/Linux                       | Windows launcher                        |
+| ------------------------------------------------ | --------------------------------- | --------------------------------------- |
+| Add Japanese and Mandarin resources              | `bash install.sh --all-languages` | `".\Start KokoSpeak.cmd" -AllLanguages` |
+| Reinstall dependencies and rebuild the interface | `bash install.sh --repair`        | `".\Start KokoSpeak.cmd" -Repair`       |
+| Install without launching                        | `bash install.sh --no-launch`     | `".\Start KokoSpeak.cmd" -NoLaunch`     |
+
+The Windows launcher commands above work in Command Prompt. In PowerShell, prefix a quoted launcher path with `&`, for example:
+
+```powershell
+& ".\Start KokoSpeak.cmd" -Repair
+```
+
+If a download times out, rerun the installer to retry. Use the repair option if packages or build files are damaged. Setup output is saved in `.runtime/setup.log`.
+
+See [INSTALL.md](INSTALL.md) for troubleshooting, runtime locations, and distribution details.
+
 ## Features
 
-- **54 built-in voices across 9 language options:** American and British English, Japanese, Mandarin Chinese, French, Hindi, Italian, Spanish, and Brazilian Portuguese.
-- **Weighted voice blending:** Mix up to three voices from the selected language. Weights are normalized before the voice embeddings are combined.
-- **Delivery controls:** Adjust speaking speed from 0.50× to 2.00× and pitch from −12 to +12 semitones. Pitch processing compensates for the associated tempo change.
-- **Pacing and dialogue:** Set extra gaps between segments and paragraphs, or use script commands to switch speakers and insert explicit pauses.
-- **Audio finishing:** Adjust bass, treble, output gain, fades, silence trimming, and peak normalization. Choose clean, small-room echo, or radio-bandpass effects.
-- **Voice presets and recipes:** Start with Natural, Narration, Bright, Broadcast, or Soft room. Export your complete voice settings as JSON and import them later.
-- **Generation progress and cancellation:** See model preparation separately from completed-segment progress, and request cancellation while a job is queued or running.
-- **Batch generation:** Load up to eight `.txt` or `.md` files and generate separate takes sequentially with the current settings.
-- **Take history:** Compare the last 12 takes in the current session and restore the script and settings used for each one.
-- **Audio preview:** Inspect a waveform, listen with the integrated player, loop playback, enable autoplay for the next take, or change preview playback speed.
-- **Timed transcript:** Click a transcript segment to seek to its position in the audio.
-- **Audio and subtitle export:** Download WAV, FLAC, OGG, or MP3 audio with a custom filename, plus SRT or VTT subtitles.
-- **Text import and export:** Open `.txt` or `.md` scripts and download the editor contents as a text file.
-- **Keyboard shortcut:** Press `Ctrl+Enter` or `Cmd+Enter` to generate speech.
-- **Responsive interface:** A dark workspace with frosted panels, a floating toolbar, and layouts for different screen sizes.
+- **54 built-in voices across 9 language options.** Choose American or British English, Japanese, Mandarin Chinese, French, Hindi, Italian, Spanish, or Brazilian Portuguese.
+- **Weighted voice mixing.** Blend up to three voices from the selected language, with normalized embedding weights.
+- **Speed and pitch controls.** Set speaking speed from 0.50× to 2.00× and pitch from −12 to +12 semitones, with tempo compensation during pitch processing.
+- **Pacing and dialogue.** Adjust extra segment and paragraph gaps, switch speakers within a script, and insert explicit pauses.
+- **Audio finishing.** Control bass, treble, output gain, fades, edge-silence trimming, and peak normalization. Choose clean, small-room echo, or radio-bandpass effects.
+- **Presets and reusable recipes.** Start with Natural, Narration, Bright, Broadcast, or Soft room. Save complete voice settings as JSON and import them later.
+- **Progress and cancellation.** See preparation status and actual completed-segment progress. Cancel queued work or request cancellation of a running job.
+- **Batch generation.** Process up to eight `.txt` or `.md` files sequentially with the current voice settings.
+- **Take comparison.** Replay the last 12 takes in the current session and restore the exact script and settings behind each one.
+- **Audio preview.** Inspect a waveform, listen with the integrated player, loop playback, enable autoplay for the next take, and adjust preview speed.
+- **Timed transcript and subtitles.** Click transcript segments to seek, then download SRT or VTT captions.
+- **Multiple audio formats.** Export WAV, FLAC, OGG, or MP3 with a custom filename.
+- **Text import and export.** Open `.txt` or `.md` scripts and download the editor contents as a text file.
+- **Keyboard shortcut.** Press `Ctrl+Enter` or `Cmd+Enter` to generate speech.
+- **Responsive workspace.** Frosted panels, a floating toolbar, and layouts that adapt to different screen sizes.
 
 ## Available Languages and Voices
 
@@ -42,100 +98,21 @@ https://github.com/user-attachments/assets/d404b889-975e-4d2a-a451-1e12f1f087ba
 | Spanish              | Dora                                                                       | Alex, Santa                                                |
 | Brazilian Portuguese | Dora                                                                       | Alex, Santa                                                |
 
-Japanese and Mandarin require the optional language dependencies described below.
+Japanese and Mandarin require the optional language setup. Model, voice, and dictionary downloads can still occur when you first use an uncached resource.
 
-## Technologies Used
+## Using KokoSpeak
 
-- **React and TypeScript:** Frontend components, state, and typed API requests.
-- **Tailwind CSS:** Interface styling and design tokens.
-- **Vite:** Frontend development server and production builds.
-- **Python, FastAPI, and Uvicorn:** Local API server, request validation, and generation jobs.
-- **Kokoro and Misaki:** Speech synthesis and language processing.
-- **NumPy and SoundFile:** Audio handling and format conversion.
-- **FFmpeg:** Pitch adjustment, EQ, effects, and MP3 encoding.
-
-## Setup and Usage
-
-### Requirements
-
-- **Python 3.11 or 3.12.** The pinned Kokoro 0.9.4 package requires Python below 3.13.
-- **Node.js 22.12 or newer.** Node.js 24 is also supported by the project configuration.
-- **FFmpeg** for pitch changes, bass/treble adjustments, room/radio effects, and MP3 export. Clean generation with default settings does not require it.
-
-On macOS with Homebrew:
-
-```bash
-brew install ffmpeg
-```
-
-### 1. Start the Python Backend
-
-From the project root, create and activate a Python 3.12 virtual environment:
-
-```bash
-cd server
-python3.12 -m venv .venv
-source .venv/bin/activate
-python -m pip install --upgrade pip
-python -m pip install -r requirements.txt
-python -m uvicorn src.main:app --host 127.0.0.1 --port 8000
-```
-
-If you already use a Python 3.12 Conda environment, activate it instead of creating a virtual environment, then run the installation and Uvicorn commands from `server/`:
-
-```bash
-conda activate kokospeak
-```
-
-On Windows, create the environment with `py -3.12 -m venv .venv` and activate it with `.venv\Scripts\activate` in Command Prompt, or `.venv\Scripts\Activate.ps1` in PowerShell.
-
-### 2. Start the React Frontend
-
-Open a second terminal. From the project root:
-
-```bash
-cd client
-npm install
-npm run dev
-```
-
-Open **http://127.0.0.1:5173** in your browser. Keep both terminals running during development. The frontend forwards `/api` requests to the Python backend on port 8000.
-
-The interface runs in your browser; it does not open a separate native application window.
-
-### 3. Generate Audio
-
-1. Enter text, open a script, or load the dialogue example.
-2. Select a language and voice, or enable the voice mixer.
-3. Adjust the delivery and finishing settings.
+1. Write or open a script, or load the dialogue example.
+2. Select a language and base voice. Enable the mixer to create a blend.
+3. Adjust the delivery and audio-finishing settings.
 4. Select **Generate speech** and follow the progress indicator.
-5. Preview the result, compare takes, and export audio or subtitles.
+5. Listen, compare takes, and export audio or subtitles.
 
-For a batch, choose up to eight text files in the editor's batch section and generate them with the current voice settings.
+For a batch, select up to eight files in the editor's batch section and generate them with the current settings. Each file produces a separate take.
 
-### Optional Language Dependencies
+### Dialogue and Pause Commands
 
-For Japanese and Mandarin, run this from `server/` in your Python environment:
-
-```bash
-python -m pip install -r requirements-languages.txt
-```
-
-Japanese may also require its dictionary download:
-
-```bash
-python -m unidic download
-```
-
-If the speech engine cannot locate eSpeak NG, install it for your operating system. On macOS:
-
-```bash
-brew install espeak-ng
-```
-
-## Dialogue and Pause Commands
-
-Put each command alone on a line. Voice IDs must belong to the selected language. For example, with American English selected:
+Place commands alone on a line. Voice IDs must belong to the selected language. With American English selected:
 
 ```text
 [voice=af_heart]
@@ -146,81 +123,78 @@ Every story begins with a voice.
 And sometimes, a second perspective.
 ```
 
-- `[voice=...]` changes the speaker. The settings panel shows the base voice ID, and the full catalog is in `server/src/catalog.py`.
-- `[pause=...]` adds an explicit pause from 0 to 10 seconds.
+- `[voice=...]` changes the speaker. The settings panel shows your base voice ID; the complete catalog is in `server/src/catalog.py`.
+- `[pause=...]` inserts an explicit pause from 0 to 10 seconds.
 - Empty lines create paragraph boundaries.
-- Selecting another voice overrides the base blend for that segment. Selecting the base voice returns to its blend when mixing is enabled.
+- Switching to another voice overrides the base blend for that segment. Selecting the base voice returns to its blend when mixing is enabled.
 
-The pacing controls add gaps between planned segments and paragraphs. Natural pauses in the generated speech may remain as well.
+Pacing settings add gaps between planned segments and paragraphs. Natural pauses in the speech may remain in addition to these gaps.
 
-## Production Build
+### History, Files, and Offline Use
 
-Build the frontend from `client/`:
+Scripts, settings, and the 12-take history live in session memory and reset when you reload the page. Download a voice recipe to retain its settings.
+
+Source launches save generated WAV previews and subtitle metadata in `server/generated/`. Packaged applications use the operating system's writable KokoSpeak application-data folder. Exported downloads go to the location selected by your browser.
+
+Complete setup and cache the languages/voices you need before working offline. Cancellation is checked at safe boundaries, so a model download or active inference chunk may not stop immediately. Completed batch takes are retained.
+
+Subtitles follow measured processed-segment durations, rather than word-level alignment. Review captions before publication. Preview playback-speed changes affect listening only; they do not change the exported audio.
+
+## Technologies Used
+
+| Component                   | Technology                                                 |
+| --------------------------- | ---------------------------------------------------------- |
+| Interface                   | React, TypeScript, Tailwind CSS, Vite                      |
+| Local backend               | Python, FastAPI, Uvicorn                                   |
+| Speech synthesis            | Kokoro 0.9.4 and Misaki                                    |
+| Audio processing            | NumPy, SoundFile, FFmpeg                                   |
+| Automatic setup             | uv, isolated Python environment, local Node.js build tools |
+| Desktop build configuration | PyInstaller and a manual GitHub Actions workflow           |
+
+## Development
+
+Automatic installation is intended for running the application. For frontend/backend development, use separate processes.
+
+<details>
+<summary>Manual developer setup</summary>
+
+Use Python 3.11 or 3.12 and Node.js 22.12+ or 24. From the project root, start the backend:
 
 ```bash
-npm run build
-```
-
-Then restart the Python backend from `server/`:
-
-```bash
+cd server
+python3.12 -m venv .venv
+source .venv/bin/activate
+python -m pip install --upgrade pip
+python -m pip install -r requirements.txt
 python -m uvicorn src.main:app --host 127.0.0.1 --port 8000
 ```
 
-The backend detects `client/dist/` and serves the built interface at **http://127.0.0.1:8000**. The Vite development server is no longer needed for this mode.
+An existing Python 3.12 Conda environment can be used instead of creating `.venv`. On Windows, use `py -3.12 -m venv .venv` and activate it with `.venv\Scripts\activate` in Command Prompt or `.venv\Scripts\Activate.ps1` in PowerShell.
 
-## File Structure
+In another terminal, from the project root:
 
-```text
-kokospeak/
-├── client/
-│   ├── public/
-│   ├── src/
-│   │   ├── components/        Editor, voice controls, progress, player, history
-│   │   ├── data/              Voice catalog and presets
-│   │   ├── hooks/             Studio state and job polling
-│   │   ├── lib/               API calls and download helpers
-│   │   ├── pages/             Workspace layout
-│   │   ├── types/             TypeScript contracts
-│   │   ├── App.tsx
-│   │   ├── index.css
-│   │   └── main.tsx
-│   ├── package.json
-│   └── vite.config.ts
-├── server/
-│   ├── src/
-│   │   ├── main.py            FastAPI routes and output handling
-│   │   ├── engine.py          Kokoro inference and voice blending
-│   │   ├── catalog.py         Languages and voice IDs
-│   │   ├── models.py          Request and settings validation
-│   │   ├── script.py          Script planning and commands
-│   │   ├── dsp.py             Audio processing and subtitle generation
-│   │   └── jobs.py            Generation queue and cancellation
-│   ├── tests/
-│   ├── generated/             Created when the backend runs
-│   ├── requirements.txt
-│   ├── requirements-languages.txt
-│   └── requirements-dev.txt
-├── assets/
-│   └── thumbnail.png
-├── DESIGN.md
-└── README.md
+```bash
+cd client
+npm install
+npm run dev
 ```
 
-Keep the complete `server/src/` package together. Run the backend through `uvicorn src.main:app`, rather than `python main.py`.
+Open **http://127.0.0.1:5173**. Vite forwards `/api` requests to Python. Stop a manually started backend in its terminal.
 
-## Notes
+For optional Japanese/Mandarin resources, run these in the backend environment from `server/`:
 
-- **Local storage:** Generated WAV previews and subtitle metadata remain in `server/generated/` until you remove them. Exported downloads go to the location chosen by your browser.
-- **Session history:** Scripts, settings, and recent-take history are held in memory and reset when the page reloads. Download a voice recipe to retain its settings.
-- **Cancellation:** Running inference or model downloads may not stop immediately. Cancellation is checked at safe boundaries; completed batch takes are retained.
-- **Subtitles:** Timing follows measured audio segments, rather than word-level alignment. Review subtitles before publication.
-- **Input limits:** Each script accepts up to 100,000 characters. Long text is split into bounded segments, and sentence splitting is heuristic.
-- **Audio controls:** Presets adjust synthesis and audio-processing settings. They do not provide trained emotion conditioning or voice cloning. Preview playback speed changes listening only; it does not alter exports.
+```bash
+python -m pip install -r requirements-languages.txt
+python -m unidic download
+```
 
-## Development Checks
+The requirements include `imageio-ffmpeg`. If your platform cannot use its binary, install a system FFmpeg executable or set `KOKOSPEAK_FFMPEG_PATH`. eSpeak NG may also need a system installation if its loader cannot locate it.
 
-From `server/`, with your Python environment active:
+</details>
+
+### Checks
+
+From `server/`, with its Python environment active:
 
 ```bash
 python -m pip install -r requirements-dev.txt
@@ -233,6 +207,78 @@ From `client/`:
 npm run typecheck
 npm run build
 ```
+
+After building the frontend, restart the Python backend to serve `client/dist/` at **http://127.0.0.1:8000** without the Vite development server.
+
+## Building a Desktop Release
+
+Build configuration is included for downloadable app bundles. From the project root, in a Python 3.11/3.12 build environment with Node.js available:
+
+```bash
+python scripts/build_desktop.py
+```
+
+The script installs build dependencies, builds the frontend, and creates a native archive under `release/`.
+
+| Build host | Archive contents                                                   |
+| ---------- | ------------------------------------------------------------------ |
+| macOS      | `KokoSpeak.app`                                                    |
+| Windows    | `KokoSpeak` folder containing `KokoSpeak.exe` and its dependencies |
+| Linux      | Native `KokoSpeak` executable folder                               |
+
+Build on each target operating system and architecture. Keep the complete Windows/Linux output folder together. Bundled applications still open the interface in the user's browser.
+
+The repository also includes a manually triggered **Build desktop bundles** GitHub Actions workflow. Desktop configuration is provided; compiled, signed installers are not included in the source download. Signing, notarization, and clean-machine release testing remain separate distribution steps. See [INSTALL.md](INSTALL.md) for the full process.
+
+## File Structure
+
+```text
+kokospeak/
+├── client/
+│   ├── public/
+│   ├── src/
+│   │   ├── components/
+│   │   ├── data/
+│   │   ├── hooks/
+│   │   ├── lib/
+│   │   ├── pages/
+│   │   ├── types/
+│   │   ├── App.tsx
+│   │   ├── index.css
+│   │   └── main.tsx
+│   ├── package.json
+│   └── vite.config.ts
+├── server/
+│   ├── src/
+│   │   ├── main.py
+│   │   ├── engine.py
+│   │   ├── catalog.py
+│   │   ├── models.py
+│   │   ├── script.py
+│   │   ├── dsp.py
+│   │   ├── jobs.py
+│   │   └── runtime.py
+│   ├── tests/
+│   ├── generated/
+│   └── requirements*.txt
+├── scripts/
+│   ├── setup.py
+│   └── build_desktop.py
+├── packaging/
+├── .github/workflows/build-desktop.yml
+├── assets/thumbnail.png
+├── install.sh
+├── install.ps1
+├── start.sh
+├── Start KokoSpeak.command
+├── Start KokoSpeak.cmd
+├── launch.py
+├── INSTALL.md
+├── DESIGN.md
+└── README.md
+```
+
+The complete `server/src/` package is required. `generated/` and `.runtime/` are created as needed; `.runtime/` contains managed setup files and is excluded from source control.
 
 ## Acknowledgments
 
