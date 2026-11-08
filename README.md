@@ -6,7 +6,11 @@ A local text-to-speech application powered by the open-source Kokoro model, with
 
 ## Preview
 
-<img width="2887" height="3861" alt="thumbnail" src="https://github.com/user-attachments/assets/c5b8b05d-7839-4032-b40e-2d0240817368" />
+<img width="2869" height="3851" alt="thumbnail" src="https://github.com/user-attachments/assets/b38a9d08-274f-4280-88b8-a6c0e041a914" />
+
+
+https://github.com/user-attachments/assets/d404b889-975e-4d2a-a451-1e12f1f087ba
+
 
 
 ## Features
