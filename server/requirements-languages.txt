@@ -1,0 +1,3 @@
+-r requirements.txt
+# Optional Japanese and Mandarin dependencies; model/dictionary downloads may follow.
+misaki[ja,zh]==0.9.4

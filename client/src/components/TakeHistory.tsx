@@ -1,0 +1,7 @@
+import { History,RotateCcw } from 'lucide-react';
+import type { Take } from '../types/studio';
+export default function TakeHistory({takes,active,busy,onSelect,onRestore}:{takes:Take[];active:string|undefined;busy:boolean;onSelect:(take:Take)=>void;onRestore:(take:Take)=>void}){
+  return <section className="panel history-panel" aria-labelledby="history-title"><div className="panel-heading"><h2 id="history-title"><History size={16}/>Take history</h2><span className="eyebrow">SESSION / {takes.length}</span></div>
+    {takes.length?<ul>{takes.map((take,index)=><li key={take.audio.id} className={active===take.audio.id?'active-take':''}><button className="take-select" disabled={busy} onClick={()=>onSelect(take)}><span className="take-number">{String(takes.length-index).padStart(2,'0')}</span><span className="min-w-0"><strong>{take.audio.label}</strong><small>{take.settings.blend.length?'Voice blend':take.settings.voice} · {take.settings.speed.toFixed(2)}× · {take.audio.duration.toFixed(1)} s</small></span></button><button className="icon-button" disabled={busy} onClick={()=>onRestore(take)} aria-label={`Restore script and settings for ${take.audio.label}`} title="Restore script and settings"><RotateCcw size={14}/></button></li>)}</ul>:<p className="history-empty">Compare up to 12 recent takes, or restore the exact script and settings behind one. History resets when you reload.</p>}
+  </section>;
+}
