@@ -6,9 +6,8 @@ A local text-to-speech application powered by the open-source Kokoro model, with
 
 ## Preview
 
-![KokoSpeak Thumbnail](assets/thumbnail.png)
+<img width="2887" height="3861" alt="thumbnail" src="https://github.com/user-attachments/assets/c5b8b05d-7839-4032-b40e-2d0240817368" />
 
-https://github.com/user-attachments/assets/d0300ff0-6af2-42f5-b8d7-6869fcc108dc
 
 ## Features
 
